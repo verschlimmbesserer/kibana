@@ -1,0 +1,32 @@
+---
+
+- name: "Add repo key"
+  ansible.builtin.apt_key:
+    url: "{{ kibana_repo_key }}"
+    state: present
+
+- name: "Add elastic repo"
+  ansible.builtin.apt_repository:
+    filename: elastic
+    repo: "{{ kibana_repo }}"
+    update_cache: true
+    state: present
+
+- name: "Install Kibana"
+  ansible.builtin.apt:
+    name: kibana
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Deploy kibana config
+  ansible.builtin.template:
+    src: kibana.yaml.j2
+    dest: /etc/kibana/kibana.yaml
+    owner: root
+    group: kibana
+    mode: "0660"
+  register: kibanaconfig
+  notify:
+    - Start kibana
+    - Restart kibana

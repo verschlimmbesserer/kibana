@@ -1,0 +1,12 @@
+---
+
+- name: Start kibana
+  ansible.builtin.systemd_service:
+    name: kibana
+    enabled: true
+    state: started
+
+- name: Restart kibana
+  ansible.builtin.systemd_service:
+    name: kibana
+    state: restarted
